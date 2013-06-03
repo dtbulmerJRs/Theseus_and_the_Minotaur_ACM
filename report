@@ -1,0 +1,103 @@
+
++
+Program Team:  Derrik Bulmer, Eric H. Kim
+1. Problem:  Theseus and the Minotaur
+
+Those of you with a classical education may remember the legend of Theseus and the Minotaur. This is an unlikely tale involving a bull-headed monster, lovelorn damsels, balls of silk and an underground maze full of twisty little passages all alike. In line with the educational nature of this contest, we will now reveal the true story.
+The maze was a series of caverns connected by passages. Theseus managed to smuggle into the labyrinth with him a supply of candles and a small tube of phosphorescent paint with which he could mark his way, or, more specifically, the exits he used. He knew that he would be lowered into a passage between two caverns, and that if he could find and kill the Minotaur he would be set free. His intended strategy was to move cautiously along a passage until he came to a cavern and then turn right (he was left-handed and wished to keep his sword away from the wall) and feel his way around the edge of the cavern until he came to an exit. If this was unmarked, he would mark it and enter it; if it was marked he would ignore it and continue around the cavern. If he heard the Minotaur in a cavern with him, he would light a candle and kill the Minotaur, since the Minotaur would be blinded by the light. If, however, he met the Minotaur in a passage he would be in trouble, since the size of the passage would restrict his movements and he would be unable to either light a candle or fight adequately. When he entered a cavern that had been previously entered by the Minotaur he would light a candle and leave it there and then turn right (as usual) but take the Minotaur's exit.
+In the meantime, the Minotaur was also searching for Theseus. He was bigger and slower-moving but he knew the caverns well and hence, unlikely as it may seem, every time he emerged from a passage into a cavern, so did Theseus, albeit usually in a different one. The Minotaur turned left when he entered a cavern and traveled clockwise around it until he came to an unmarked (by him) exit, at which point he would mark it and take it. If he sensed that the cavern he was about to enter had a candle burning in it, he would turn and flee back up the passage he had just used, arriving back at the previous cavern to complete his 'turn.'
+Consider the following labyrinth as an example
+
+
+
+
+
+
+
+Assume that Theseus starts off between A and C going toward C, and that the Minotaur starts off between F and H going toward H. After entering C, Theseus will move to D, whereas the Minotaur, after entering H will move to G. Theseus will then move towards G while the Minotaur will head for D and Theseus will be killed in the corridor between D and G. If, however, Theseus starts off as before and the Minotaur starts off between D and G then, while Theseus moves from C to D to G, the Minotaur moves from G to E to F. When Theseus enters G he detects that the Minotaur has been there before him and heads for E, and not for H, reaching it as the Minotaur reaches H. The Minotaur is thwarted in his attempt to get to G and turns back, arriving in H just as Theseus, still 'following' the Minotaur arrives in F. The Minotaur tries E and is again thwarted and arrives back at H just as Theseus arrives in hot pursuit. Thus the Minotaur is slain in H.
+Write a program that will simulate Theseus' pursuit of the Minotaur.
+
+2. Link :  http://www.karrels.org/Ed/ACM/95/prob_f.html
+
+3. Description of Algorithm:  Stacks, Graphs
+Algorithms and Design:  
+The object-oriented nature of the graph make Java a language well suited for it.
+Classes will comprise the major elements:
+Labyrinth
+Data Members:
+An array of Nodes, nodes
+String graphText:  the correctly formatted string of text entered by the user, as described in the Sample input.
+A reference to a Theseus object: the class Theseus is described below
+A reference to a Minotaur object: the class Minotaur is described below
+Methods:
+parseText():  in charge of collecting user inputted text, checking it for errors, and then parse it by using the makeGraph()
+makeGraph(): after the textual graph has been made, this will actually populated the array of nodes, make the Theseus and Minotaur objects, and start the looping movement algorithm by the helper function moveGraph()
+moveContestants (): will loop the move() method until a collision is triggered
+move(): will trigger the move() methods of the Theseus and Minotaur  references according to the individual move algorithms of the contestants; will only go if TrackStack isCollision is false (see below);  once collision occurred, getWhoDied() is called to print the victor and loser.
+Constructor:
+Default Constructor only.
+Node
+Data Members:
+An array of Nodes, neighbors, the neighboring nodes
+Theseus
+Data Members:
+Reference to startingNode
+Reference to currentNode
+Methods:
+Move(): will check the TraceMoves stack (see below) for valid moves according to the Theseus move algorithm
+Constructor:
+Will have the starting location set
+Minotaur
+Data Members:
+Reference to startingNode
+Reference to currentNode
+Methods:
+Move(): will check the TrackMoves stack (see below) for valid moves according to the Minotaur move algorithm
+Constructor:
+Will have the starting location set
+TrackMoves
+Data Members:
+String of characters called trackTheseus, and it records all the moves done by Theseus
+String of characters called trackMinotaur, and it records all the moves done by Minotaur
+Boolean isCollision, true if there was a collision, false otherwise
+Methods:
+recordMoves(string t, string m): uses helper functions recordMoveTheseus(string t) and recordMoveMinotaur(string m) to appends current moves simultaneously
+recordMoveTheseus(string t):  appends the current move to trackTheseus
+recordMoveMinotaur(string m): appends the current move to trackMinotaur
+checkCollision(): looks at both tracks and compares them, and sets isCollision to true if there is a collision
+getWhoDied(): if collision occurred, print the one who died.
+
+Stack : First In - Last Out (FILO) - A stack is essentially an ordered list in which all the insertions and deletions are made at one end. However, in our project we are not concerned. Basically, for both Theseus and the Minotaur, their current node location and destination location will be placed into a stack. For instance, AC means that either Theseus or the Minotaur was at position A and moved into position C. Since both the Minotaur and Theseus move at the same exact time, the current stack location should be the same for both. If the second letter for both Theseus and the Minotaur are the same, then that means Theseus has successfully slain the Minotaur (i.e. AD and CD) in a node. However, if the current and destination nodes are opposite of one another (i.e. AC and CA), then the Minotaur has successfully slain Theseus in a tunnel. The stack is meant to record Theseus’s location and to make sure that he does not re-visit any past nodes. 
+Running Time Analysis: O(1) or O(n^2). It would be O(1) only if we are concerned with just inserting nodes into the stack. However, if we do not make any modification to the node class, then we will have to iterate through the stack every time to make sure that destination node is only visited once in the stack. In that case, it would be O(n^2)
+Input
+Input will consist of a series of labyrinths. Each labyrinth will contain a series of cavern descriptors, one per line. Each line will contain a cavern identifier (a single upper case character) followed by a colon (:) and a list of caverns reachable from it (in counterclockwise order). No cavern will be connected to itself. The cavern descriptors will not be ordered in any way. The description of a labyrinth will be terminated by a line starting with a @ character, followed by two pairs of cavern identifiers. The first pair indicates the passage in which Theseus starts, and the second in which the Minotaur starts. The travel in a starting passage is toward the cavern whose identifier is the second character in the pair. The file will be terminated by a line consisting of a single #.
+A final encounter is possible for each input data set.
+Output
+Output will consist of one line for each labyrinth. Each line will specify who gets killed and where. Note that if the final encounter takes place in a passage it should be specified from Theseus' point of view. Follow the format shown in the example below exactly, which describes the situations referred to above.
+
+Sample Input
+A:BCD
+D:BACG
+F:HE
+G:HED
+B:AD
+E:FGH
+H:FEG
+C:AD
+@ACFH
+A:BCD
+D:BACG
+F:HE
+G:HED
+B:AD
+E:FGH
+H:FEG
+C:AD
+@ACDG
+#
+Output for the Sample Input
+Theseus is killed between D and G
+The Minotaur is slain in H
+Graphs : We will be using an undirected graph, meaning that the edges have no direction and there are no loops. There will be a set of nodes that are potentially linked to each other. Based on the user input, a labyrinth will be created. For example. A:BCD means that the node A will be linked to B C and D. We will be using breadth-first and debth-first traversals for both Theseus and the Minotaur. The algorithms will dictate how they move. 
+Running Time Analysis: O(|V| + |E|) in the worst case. This means that the graph has to traverse through every node and every edge. 
+  
